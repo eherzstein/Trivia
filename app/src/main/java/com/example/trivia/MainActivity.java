@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,12 +31,13 @@ public class MainActivity extends AppCompatActivity {
    RadioGroup radioGroup;
    Button generate, verify;
    TextView question;
+   ImageView imageView, imageView2, imageView3, imageView4;
 
    String category = "";
    String difficulty = "";
    String [] choices = new String [4];
 
-	public void shuffleChoices(String choices[], RadioGroup radioGroup)
+	public void shuffleChoices(String[] choices, RadioGroup radioGroup)
     {
        // choices = new String [] {"0","1","2","correct_answer"};
 
@@ -87,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         choice2 = findViewById(R.id.choice2);
         choice3 = findViewById(R.id.choice3);
         radioGroup = findViewById(R.id.radioGroup);
+        imageView = findViewById(R.id.imageView);
+        imageView2 = findViewById(R.id.imageView2);
+        imageView3 = findViewById(R.id.imageView3);
+        imageView4 = findViewById(R.id.imageView4);
         generate = findViewById(R.id.generate);
         question = findViewById(R.id.question);
         verify = findViewById(R.id.verify);
@@ -108,38 +115,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*public void verify(String correct)
+    public void verify(String correct)
     {
-        String url = "https://opentdb.com/api.php?amount=50&category=9&difficulty=easy&type=multiple";
+        boolean correctA = false;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-
-                            for(int k=0; k<radioGroup.getChildCount(); k++) {
-                                if (((RadioButton) radioGroup.getChildAt(k)).getText().equals(correct))
-                                {
-
-
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Tag","resultat =  "+error);
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            RadioButton selectedRadioButton = findViewById(selectedId);
+            if(selectedRadioButton.getText().equals(correct)) {
+                correctA = true;
             }
-        });
-        // ajouter tous les éléments à la queue
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(jsonObjectRequest);
-    }*/
+
+        if(correctA)
+        {
+            switch(selectedId) {
+
+                case R.id.choice1:
+                    imageView.setImageResource(R.drawable.checkmark);
+                break;
+
+                case R.id.choice2:
+                    imageView2.setImageResource(R.drawable.checkmark);
+                    break;
+
+                case R.id.choice3:
+                    imageView3.setImageResource(R.drawable.checkmark);
+                    break;
+
+                case R.id.choice4:
+                    imageView4.setImageResource(R.drawable.checkmark);
+                    break;
+            }
+
+            Log.d("hi","dude im working");
+            Toast.makeText(MainActivity.this, "Correct!", Toast.LENGTH_LONG).show();
+
+        } else {
+            Toast.makeText(MainActivity.this, "Incorrect!", Toast.LENGTH_LONG).show();
+
+        }
+    }
 
     public void afficher()
     {
@@ -150,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            radioGroup.clearCheck();
+                            imageView.setImageResource(R.drawable.blank);
+                            imageView2.setImageResource(R.drawable.blank);
+                            imageView3.setImageResource(R.drawable.blank);
+                            imageView4.setImageResource(R.drawable.blank);
+
                             int amount = 50;
 
                             JSONArray array = response.getJSONArray("results");
@@ -175,13 +195,16 @@ public class MainActivity extends AppCompatActivity {
 
                             shuffleChoices(choices, radioGroup);
 
-                          //  Log.d("tag","helloo"+incorrect_answers.getJSONObject(0).toString());
-
                             for (int j = 0; j < radioGroup.getChildCount(); j++) {
                                 ((RadioButton) radioGroup.getChildAt(j)).setText(choices[j]);
                             }
 
-
+                            verify.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    verify(correct);
+                                }
+                            });
 
                         } catch (JSONException e) {
                             e.printStackTrace();
