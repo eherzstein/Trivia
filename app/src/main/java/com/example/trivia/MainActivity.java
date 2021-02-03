@@ -2,6 +2,7 @@ package com.example.trivia;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
    RadioButton choice1, choice2, choice3, choice4;
    RadioGroup radioGroup;
-   Button generate, verify;
+   Button generate, verify, back;
    TextView question;
    ImageView imageView, imageView2, imageView3, imageView4;
 
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         choice1 = findViewById(R.id.choice1);
         choice2 = findViewById(R.id.choice2);
         choice3 = findViewById(R.id.choice3);
+        choice4 = findViewById(R.id.choice4);
         radioGroup = findViewById(R.id.radioGroup);
         imageView = findViewById(R.id.imageView);
         imageView2 = findViewById(R.id.imageView2);
@@ -97,7 +99,48 @@ public class MainActivity extends AppCompatActivity {
         generate = findViewById(R.id.generate);
         question = findViewById(R.id.question);
         verify = findViewById(R.id.verify);
+        back = findViewById(R.id.back);
         afficher();
+
+        String[] itemsC = new String[]{"Any Category", "General Knowledge", "Entertainment: Books", "Entertainment: Film", "Entertainment: Music",
+                "Entertainment: Musicals & Theatres", "Entertainment: Television", "Entertainment: Video Games", "Entertainment: Board Games", "Science & Nature",
+                "Science: Computers", "Science: Mathematics", "Mythology", "Sports", "Geography", "History", "Politics", "Art", "Celebrities",
+                "Animals", "Vehicles", "Entertainment: Comics", "Science: Gadgets", "Entertainment: Japanese Anime & Manga",
+                "Entertainment: Cartoon & Animation"};
+
+        String[] itemsD = new String[]{"Any Difficulty", "Easy", "Medium", "Hard"};
+
+        Bundle extras=getIntent().getExtras();
+        if(extras!=null)
+        {
+            String dropdownC = extras.getString("Message1");
+            String dropdownD = extras.getString("Message2");
+
+            for(int i = 1; i < itemsC.length; i++)
+            {
+                if(itemsC[i].equals(dropdownC))
+                {
+                    category = "&category="+(i+8);
+                }
+            }
+            for(int j = 1; j < itemsD.length; j++) {
+                if (itemsD[j].equals(dropdownD)) {
+                    difficulty = "&difficulty=" + dropdownD.toLowerCase();
+                }
+            }
+        }
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // code ici
+                Intent returnIntent=getIntent();
+                returnIntent.putExtra("returnData", "");
+                setResult(RESULT_OK,returnIntent);
+                finish();
+
+            }
+        });
 
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void verify(String correct)
     {
@@ -146,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-            Log.d("hi","dude im working");
+          //  Log.d("hi","dude im working");
             Toast.makeText(MainActivity.this, "Correct!", Toast.LENGTH_LONG).show();
 
         } else {
@@ -157,7 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void afficher()
     {
-        String url = "https://opentdb.com/api.php?amount=50&category=9&difficulty=easy&type=multiple";
+      //  String url = "https://opentdb.com/api.php?amount=50+&category=9&difficulty=easy&type=multiple";
+        String url = "https://opentdb.com/api.php?amount=50" + category + difficulty + "&type=multiple";
+        Log.d("dis the url", url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
