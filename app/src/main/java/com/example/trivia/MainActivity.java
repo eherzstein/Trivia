@@ -2,6 +2,7 @@ package com.example.trivia;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         question = findViewById(R.id.question);
         verify = findViewById(R.id.verify);
         back = findViewById(R.id.back);
-        afficher();
+        afficher(50);
 
         String[] itemsC = new String[]{"Any Category", "General Knowledge", "Entertainment: Books", "Entertainment: Film", "Entertainment: Music",
                 "Entertainment: Musicals & Theatres", "Entertainment: Television", "Entertainment: Video Games", "Entertainment: Board Games", "Science & Nature",
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                afficher();
+                afficher(50);
             }
         });
 
@@ -157,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void verify(String correct)
     {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.choice1:
                     imageView.setImageResource(R.drawable.checkmark);
-                break;
+                    break;
 
                 case R.id.choice2:
                     imageView2.setImageResource(R.drawable.checkmark);
@@ -190,20 +190,36 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
-          //  Log.d("hi","dude im working");
+            //  Log.d("hi","dude im working");
             Toast.makeText(MainActivity.this, "Correct!", Toast.LENGTH_LONG).show();
 
         } else {
-            Toast.makeText(MainActivity.this, "Incorrect!", Toast.LENGTH_LONG).show();
+            switch(selectedId) {
+                case R.id.choice1:
+                    imageView.setImageResource(R.drawable.xmark);
+                    break;
 
+                case R.id.choice2:
+                    imageView2.setImageResource(R.drawable.xmark);
+                    break;
+
+                case R.id.choice3:
+                    imageView3.setImageResource(R.drawable.xmark);
+                    break;
+
+                case R.id.choice4:
+                    imageView4.setImageResource(R.drawable.xmark);
+                    break;
+            }
+            Toast.makeText(MainActivity.this, "Incorrect!", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void afficher()
+    public void afficher(int amount)
     {
       //  String url = "https://opentdb.com/api.php?amount=50+&category=9&difficulty=easy&type=multiple";
-        String url = "https://opentdb.com/api.php?amount=50" + category + difficulty + "&type=multiple";
-        Log.d("dis the url", url);
+        String url = "https://opentdb.com/api.php?amount=" + amount + category + difficulty + "&type=multiple";
+       // Log.d("dis the url", url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -216,9 +232,15 @@ public class MainActivity extends AppCompatActivity {
                             imageView3.setImageResource(R.drawable.blank);
                             imageView4.setImageResource(R.drawable.blank);
 
-                            int amount = 50;
 
                             JSONArray array = response.getJSONArray("results");
+
+                            /*int amt = array.length()-1;
+
+                            if(amt != amount) {
+                                afficher(amt);
+                                return;
+                            }*/
 
                             //get random question
                             Random rand = new Random();
