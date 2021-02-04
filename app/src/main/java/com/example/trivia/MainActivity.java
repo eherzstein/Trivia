@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         question = findViewById(R.id.question);
         verify = findViewById(R.id.verify);
         back = findViewById(R.id.back);
-        afficher(50);
+        afficher(10);
 
         String[] itemsC = new String[]{"Any Category", "General Knowledge", "Entertainment: Books", "Entertainment: Film", "Entertainment: Music",
                 "Entertainment: Musicals & Theatres", "Entertainment: Television", "Entertainment: Video Games", "Entertainment: Board Games", "Science & Nature",
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                afficher(50);
+                afficher(10);
             }
         });
 
